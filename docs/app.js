@@ -2,11 +2,11 @@
   'use strict';
   const root = document.getElementById('app');
   const data = window.GAME_DATA;
-  const orderedIds = ['tree','suitcase','halloween','christmas','birthday'];
+  const orderedIds = ['tree','suitcase','halloween','christmas','birthday','heritage'];
   const themes = orderedIds.map(id => data.find(theme => theme.id === id));
   const AGE_LABELS = ['5–8 лет','9–14 лет','15–17 лет','18+ лет'];
   const LEVELS = ['A1','A2','B1'];
-  const THEME_DESCRIPTIONS = { tree:'Желания и планы', suitcase:'Вещи для путешествия', halloween:'Праздничный дом с привидениями', christmas:'Уютное Рождество у камина', birthday:'Праздник для друзей' };
+  const THEME_DESCRIPTIONS = { tree:'Желания и планы', suitcase:'Вещи для путешествия', halloween:'Праздничный дом с привидениями', christmas:'Уютное Рождество у камина', birthday:'Праздник для друзей', heritage:'14 символов из исходной игры' };
   const state = { screen:'setup', themeId:'tree', age:0, level:0, placed:[], ready:null, modal:null, completed:false, drag:null, suppressClickUntil:0 };
 
   function theme() { return themes.find(entry => entry.id === state.themeId); }
@@ -23,8 +23,11 @@
     birthday: `<svg class="scene-svg" viewBox="0 0 1000 700" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="partybg" x2="1" y2="1"><stop stop-color="#f7e9f5"/><stop offset="1" stop-color="#d8e5ff"/></linearGradient><filter id="partyshadow"><feDropShadow dx="0" dy="15" stdDeviation="18" flood-color="#594869" flood-opacity=".14"/></filter></defs><rect width="1000" height="700" fill="url(#partybg)"/><path d="M0 548 H1000 V700 H0Z" fill="#e9d6e4"/><path d="M0 548 H1000" stroke="#d5bed4" stroke-width="8"/><path d="M0 80 Q500 230 1000 80" fill="none" stroke="#b987bf" stroke-width="8"/><path d="M90 90 l35 54 35 -38 35 58 35 -33 35 63 35 -40 35 63 35 -48 35 63 35 -45 35 58 35 -46 35 60 35 -43 35 59 35 -48 35 57 35 -45 35 54 35 -43 35 50 35 -45" fill="none" stroke="#d49dbb" stroke-width="15" stroke-linejoin="round" opacity=".7"/><g filter="url(#partyshadow)"><ellipse cx="500" cy="546" rx="310" ry="45" fill="#bd8ea9" opacity=".18"/><rect x="220" y="500" width="560" height="50" rx="18" fill="#b783a1"/><path d="M290 550 L270 660 M710 550 L730 660" stroke="#8d6a86" stroke-width="28" stroke-linecap="round"/><ellipse cx="500" cy="470" rx="190" ry="37" fill="#fff9f5"/><rect x="347" y="358" width="306" height="118" rx="25" fill="#ffcedc" stroke="#f3a9bd" stroke-width="8"/><path d="M346 392 Q378 423 410 392 Q444 421 474 392 Q506 423 538 392 Q570 424 602 392 Q633 420 654 393" fill="none" stroke="#fffaf4" stroke-width="24" stroke-linecap="round"/><ellipse cx="500" cy="356" rx="154" ry="34" fill="#fff0f2"/><path d="M500 344 V276" stroke="#8d7ea9" stroke-width="8"/><path d="M500 273 Q478 252 500 229 Q523 255 500 273" fill="#ffdb86"/></g><path d="M170 460 Q130 310 175 190 M830 460 Q875 310 825 198" fill="none" stroke="#937b9e" stroke-width="4"/><ellipse cx="175" cy="180" rx="48" ry="65" fill="#e9a7bd"/><ellipse cx="825" cy="186" rx="48" ry="65" fill="#a6c9e9"/><circle cx="89" cy="303" r="7" fill="#e4b885"/><circle cx="915" cy="370" r="8" fill="#a6bcdb"/></svg>`
   };
 
+  sceneMarkup.heritage = window.HERITAGE_SCENE;
+
   function renderSetup() {
-    root.innerHTML = `<div class="app-shell"><header class="topbar"><div class="brand"><span class="brand-mark">✦</span>Wonderplay</div><div class="top-note">Interactive speaking games for English lessons</div></header><main class="shell-main"><div class="intro"><p class="eyebrow">English comes alive</p><h1>Choose a world. Start a conversation.</h1><p>Пять интерактивных историй для устной практики английского. Выберите тему, возраст и уровень — и играйте вместе.</p></div><div class="setup-grid"><section class="panel themes-panel"><div class="section-heading"><h2>Выберите игру</h2><span>5 тем · 14 предметов в каждой</span></div><div class="themes">${themes.map(entry => `<button type="button" class="theme-card ${entry.id === state.themeId ? 'active' : ''}" data-theme="${entry.id}" aria-pressed="${entry.id === state.themeId}"><div class="theme-preview" style="background:${entry.color}">${entry.preview}</div><div class="theme-card-body"><strong>${entry.title}</strong><small>${entry.ru}</small></div></button>`).join('')}</div></section><aside class="panel settings-card"><h2>Настройки занятия</h2><p>Выберите возраст и уровень ученика. Вопросы подстроятся под оба параметра.</p><label class="field"><span>Возраст ученика</span><div class="select-wrap"><select id="age-select">${AGE_LABELS.map((label,index) => `<option value="${index}" ${index === state.age ? 'selected' : ''}>${label}</option>`).join('')}</select></div></label><label class="field"><span>Уровень английского</span><div class="select-wrap"><select id="level-select">${LEVELS.map((label,index) => `<option value="${index}" ${index === state.level ? 'selected' : ''}>${label}</option>`).join('')}</select></div></label><button type="button" class="primary start-btn" id="start-game">Начать игру</button><p class="hint">Ученик отвечает устно. Ничего вводить и сохранять не нужно.</p></aside></div><p class="setup-footer">Made for curious minds, little and grown.</p></main></div>`;
+    root.dataset.scene = 'setup';
+    root.innerHTML = `<div class="app-shell"><header class="topbar"><div class="brand"><span class="brand-mark">✦</span>Wonderplay</div><div class="top-note">Interactive speaking games for English lessons</div></header><main class="shell-main"><div class="intro"><p class="eyebrow">English comes alive</p><h1>Choose a world. Start a conversation.</h1><p>Шесть интерактивных историй для устной практики английского. Выберите тему, возраст и уровень — и играйте вместе.</p></div><div class="setup-grid"><section class="panel themes-panel"><div class="section-heading"><h2>Выберите игру</h2><span>6 тем · 14 предметов в каждой</span></div><div class="themes">${themes.map(entry => `<button type="button" class="theme-card ${entry.id === state.themeId ? 'active' : ''}" data-theme="${entry.id}" aria-pressed="${entry.id === state.themeId}"><div class="theme-preview" style="background:${entry.color}">${entry.preview}</div><div class="theme-card-body"><strong>${entry.title}</strong><small>${entry.ru}</small></div></button>`).join('')}</div></section><aside class="panel settings-card"><h2>Настройки занятия</h2><p>Выберите возраст и уровень ученика. Вопросы подстроятся под оба параметра.</p><label class="field"><span>Возраст ученика</span><div class="select-wrap"><select id="age-select">${AGE_LABELS.map((label,index) => `<option value="${index}" ${index === state.age ? 'selected' : ''}>${label}</option>`).join('')}</select></div></label><label class="field"><span>Уровень английского</span><div class="select-wrap"><select id="level-select">${LEVELS.map((label,index) => `<option value="${index}" ${index === state.level ? 'selected' : ''}>${label}</option>`).join('')}</select></div></label><button type="button" class="primary start-btn" id="start-game">Начать игру</button><p class="hint">Ученик отвечает устно. Ничего вводить и сохранять не нужно.</p></aside></div><p class="setup-footer">Made for curious minds, little and grown.</p></main></div>`;
     root.querySelector('.top-note').textContent = 'Игры для устной практики английского';
     root.querySelector('.intro .eyebrow').textContent = 'Английский в игре';
     root.querySelector('.intro h1').textContent = 'Выберите историю. Начните разговор.';
@@ -38,6 +41,7 @@
 
   function renderGame() {
     const entry = theme();
+    root.dataset.scene = entry.id;
     const used = new Set(state.placed.map(placed => placed.id));
     const full = state.placed.length >= 7;
     root.innerHTML = `<div class="app-shell"><header class="topbar"><div class="brand"><span class="brand-mark">✦</span>Wonderplay</div><div class="top-note">Play. Speak. Imagine.</div></header><main class="shell-main game-main"><div class="game-header"><button type="button" class="back-btn" id="back-setup">← Settings</button><div class="game-header-middle"><p class="eyebrow">${AGE_LABELS[state.age].replace(' лет',' years')} · ${LEVELS[state.level]}</p><h1>${entry.title}</h1></div><div class="progress-wrap"><span>${state.placed.length} / 7 chosen</span><div class="progress-bar" role="progressbar" aria-label="Items placed" aria-valuenow="${state.placed.length}" aria-valuemin="0" aria-valuemax="7"><i style="width:${state.placed.length/7*100}%"></i></div></div></div><div class="game-layout"><section class="scene-panel"><div class="scene-caption"><p class="eyebrow">Your scene</p><h2 class="stage-title">${entry.caption}</h2><p class="stage-subtitle">${entry.subtitle}</p></div><div class="scene-area ${state.ready ? 'armed' : ''}" id="scene-area" aria-label="Place your chosen items here">${sceneMarkup[entry.id]}${state.placed.map(placed => { const item = itemById(placed.id); return `<button type="button" class="placed-item" data-placed="${item.id}" style="left:${placed.x}%;top:${placed.y}%" aria-label="${escapeHtml(displayLabel(item))}. Move or remove item.">${item.icon}</button>`; }).join('')}<div class="scene-drop-note">${state.ready ? 'Drag the item here or tap a spot' : full ? 'Seven wonderful choices!' : 'Choose an item to start'}</div></div></section><aside class="inventory"><div class="inventory-head"><p class="eyebrow">Pick your favourites</p><h2>Choose 7 of 14</h2><p>Tap an item, answer the question aloud, then place it in the scene.</p></div><div class="inventory-grid">${entry.items.map(item => `<button type="button" class="item-card ${used.has(item.id) ? 'used' : ''} ${state.ready === item.id ? 'ready' : ''}" data-item="${item.id}" ${used.has(item.id) || (full && state.ready !== item.id) ? 'disabled' : ''} aria-label="${escapeHtml(displayLabel(item))}${state.ready === item.id ? ', ready to place' : ''}"><span class="item-emoji">${item.icon}</span><span class="item-label">${escapeHtml(displayLabel(item))}</span></button>`).join('')}</div><div class="inventory-foot">${state.ready ? 'Ready to place: ' + escapeHtml(displayLabel(itemById(state.ready))) : 'Questions are for speaking. Your teacher decides when to place each item.'}</div></aside></div></main></div>${state.modal ? modalMarkup() : ''}`;
@@ -64,7 +68,7 @@
   }
   function clampPosition(x,y) {
     x = Math.max(8, Math.min(92, x)); y = Math.max(13, Math.min(88, y));
-    if (state.themeId === 'tree') {
+    if (state.themeId === 'tree' || state.themeId === 'heritage') {
       y = Math.max(19, Math.min(80, y));
       const half = 6 + (y-19)*.48;
       x = Math.max(50-half, Math.min(50+half, x));
@@ -99,7 +103,7 @@
   });
   root.addEventListener('click', event => {
     const target=event.target;
-    const themeButton=target.closest('[data-theme]');
+    const themeButton=target.closest('.theme-card[data-theme]');
     if (themeButton && state.screen==='setup') { state.themeId=themeButton.dataset.theme; render(); return; }
     if (target.closest('#start-game')) { state.screen='game'; resetRound(); window.scrollTo(0,0); return; }
     if (target.closest('#back-setup') || target.closest('#choose-theme')) { state.screen='setup'; state.modal=null; state.ready=null; state.placed=[]; render(); window.scrollTo(0,0); return; }
@@ -122,7 +126,7 @@
   function createDragGhost(item, x, y) {
     const ghost=document.createElement('div');
     ghost.className='placed-item'; ghost.style.cssText=`position:fixed;left:${x}px;top:${y}px;z-index:60;pointer-events:none;opacity:.85`;
-    ghost.textContent=item.icon; document.body.appendChild(ghost); return ghost;
+    ghost.innerHTML=item.icon; document.body.appendChild(ghost); return ghost;
   }
   root.addEventListener('pointerdown', event => {
     if (state.screen!=='game' || state.modal || event.button!==0) return;

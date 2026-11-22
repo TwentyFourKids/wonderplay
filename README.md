@@ -1,6 +1,6 @@
 # Wonderplay
 
-Five interactive English speaking games for lessons. The teacher selects a theme, age band and CEFR level; the learner answers aloud and places seven of fourteen items in a scene.
+Six interactive English speaking games for lessons. The teacher selects a theme, age band and CEFR level; the learner answers aloud and places seven of fourteen items in a scene.
 
 ## Play online
 
@@ -14,6 +14,6 @@ GitHub Pages publishes the `docs/` folder from the `main` branch whenever its fi
 
 ## Content
 
-`docs/data.js` contains five themes, 70 items and 840 authored questions. Each item's `questions` array follows age order 5–8, 9–14, 15–17, 18+, with level order A1, A2, B1 inside each age band. Scene artwork and interaction are in `docs/app.js`; styles are in `docs/styles.css`.
+`docs/data.js` and `docs/heritage-data.js` contain six themes, 84 items and 1008 authored questions. Each item's `questions` array follows age order 5–8, 9–14, 15–17, 18+, with level order A1, A2, B1 inside each age band. Scene artwork and interaction are in `docs/app.js` and `docs/heritage.js`; styles are in `docs/styles.css`.
 
 The current round stays in browser memory only. No student accounts, answer entry, analytics or persistent records are used.
